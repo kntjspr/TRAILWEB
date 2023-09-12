@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>MapLibreGL / Animation</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <meta
+      name="viewport"
+      content="initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
+    <script src="https://cdn.maptiler.com/maplibre-gl-js/v1.13.0-rc.4/mapbox-gl.js"></script>
+    <link href="https://cdn.maptiler.com/maplibre-gl-js/v1.13.0-rc.4/mapbox-gl.css" rel="stylesheet" />
+    <style>
+      #map {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+      }
+
+      .marker {
+        background-image: url('mapbox-icon.png');
+        background-size: cover;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script>
+      // Map configuration
+      var map = new mapboxgl.Map({
+        container: 'map',
+        style: 'https://api.maptiler.com/maps/topo-v2/style.json?key=Nd9rpvorhzRAvgcw4NTg',
+        minZoom: 16.15,
+        maxZoom: 18,
+        pitch: 30,
+        center: [124.6565, 8.485827147331625],
+        // desktop center: [124.65674844988388, 8.485827147331625], // Updated center coordinates
+      });
+
+      // Animation configuration
+      function rotate() {
+        map.easeTo({ bearing: 350, duration: 2000, pitch: 30, zoom: 16.8}); // desktop: 17.8
+      }
+
+      map.on('load', function () {
+        // rotate();
+
+        // Add marker
+        // var marker = new mapboxgl.Marker().setLngLat([124.65674844988388, 8.485827147331625]).addTo(map);
+      });
+    </script>
+  </body>
+</html>
