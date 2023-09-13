@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GPS Location Tracker</title>
+</head>
+<body>
+    <h1>GPS Location Tracker</h1>
+    <p id="location">Waiting for location...</p>
+
+    <script>
+        // Function to update the location every 1 second
+        function updateLocation() {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                const latitude = position.coords.latitude;
+                const longitude = position.coords.longitude;
+
+                const locationElement = document.getElementById("location");
+                locationElement.innerHTML = `Latitude: ${latitude}<br>Longitude: ${longitude}`;
+            });
+        }
+
+        // Update the location every 1 second
+        setInterval(updateLocation, 1000);
+    </script>
+</body>
+</html>
