@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>TrailMap - USTP CDO</title>
+		<meta
+			name="viewport"
+			content="initial-scale=1,maximum-scale=1,user-scalable=no"
+		/>
+		<link rel="icon" href="icon.png">
+		<script src="https://cdn.maptiler.com/maplibre-gl-js/v1.13.0-rc.4/mapbox-gl.js"></script>
+		<link href="https://cdn.maptiler.com/maplibre-gl-js/v1.13.0-rc.4/mapbox-gl.css" rel="stylesheet" />
+		<style>
+			#map {
+				position: absolute;
+				top: 0;
+				right: 0;
+				bottom: 0;
+				left: 0;
+			}
+
+			.marker {
+				background-size: cover;
+				width: 50px;
+				height: 50px;
+				border-radius: 50%;
+				cursor: pointer;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="map"></div>
+		<script>
+
+			// Temporary access token
+			const token = 'i18W7fGAdJySy2z6con5';
+			
+			// Map configuration
+			const map = new mapboxgl.Map({
+				container: 'map',
+				style: `https://api.maptiler.com/maps/topo-v2/style.json?key=${token}`,
+				minZoom: 5,
+				maxZoom: 20,
+				pitch: 30,
+				center: [124.656, 8.485],
+			});
+
+			// Add geolocate control to the map.
+			map.addControl(
+				new mapboxgl.GeolocateControl({
+					positionOptions: {
+						enableHighAccuracy: true
+					},
+					trackUserLocation: true
+				})
+			);
+
+
+			map.on('load', function () {
+
+				map.fitBounds([
+						[124.65466898725411, 8.487184535194167],
+						[124.6588773916622, 8.484294026410323]
+				]);
+
+
+				// Add marker
+				const marker = new mapboxgl.Marker().setLngLat([124.6567, 8.485827379457602]).addTo(map);
+			});
+		</script>
+	</body>
+</html>
