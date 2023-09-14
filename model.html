@@ -46,7 +46,7 @@
 			// Map configuration
 			const map = new maplibregl.Map({
 				container: 'map',
-				style: `https://api.maptiler.com/maps/basic-v2/style.json?key=${token}`,
+				style: `https://api.maptiler.com/maps/82617315-e674-42c8-94af-47872d10b0b4/style.json?key=i18W7fGAdJySy2z6con5`,
 				minZoom: 14,
 				maxZoom: 20,
 				pitch: 30,
@@ -91,34 +91,80 @@
             this.camera = new THREE.Camera();
             this.scene = new THREE.Scene();
 
-            // // create two three.js lights to illuminate the model
-            // const directionalLight = new THREE.DirectionalLight(0xffffff);
-            // directionalLight.position.set(0, -70, 100).normalize();
-            // this.scene.add(directionalLight);
 
-            // const directionalLight2 = new THREE.DirectionalLight(0xffffff);
-            // directionalLight2.position.set(0, 70, 100).normalize();
-            // this.scene.add(directionalLight2);
+            class DirectionalLight extends THREE.DirectionalLight {
+                constructor() {
+                    super(0xffffff);
+                    this.shadow.camera.top = 500;
+                    this.shadow.camera.bottom = -500;
+                    this.shadow.camera.left = -500;
+                    this.shadow.camera.right = 500;
+                    this.shadow.camera.near = 1;
+                    this.shadow.camera.far = 5000;
+                    this.shadow.mapSize.set(1024, 1024);
+                    // this.shadow.bias = -0.001;
+                    
+                    this.position.set(100, 500, 600);
+                    this.target.position.set(0, 0, 0); // Position the target at the center of the world
 
-			const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
-			this.scene.add(ambientLight);	
+                    this.castShadow = true;
+                    this.shadow.camera.position.set(-500, 1000, -500); // Adjusted light angle
+
+                
+                }
+            }
+
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            this.scene.add(ambientLight);
+
+            const directionalLight = new DirectionalLight(0xffffff, 1);
+            this.scene.add(directionalLight);
+
+            const floorLight = new THREE.DirectionalLight(0xffffff, 0.5);
+            floorLight.position.set(-100, -200, -100);
+            this.scene.add(floorLight);
+
 
             // use the three.js GLTF loader to add the 3D model to the three.js scene
             const loader = new THREE.GLTFLoader();
             loader.load(
                 'model.gltf',
                 (gltf) => {
+
+                    gltf.scene.traverse((child) => {
+                        if (child.isMesh) {
+                            // Copy color from the original material
+                            const originalColor = child.material.color.clone();
+                            const meshLambertMaterial = new THREE.MeshLambertMaterial({ color: originalColor });
+                            child.material = meshLambertMaterial;
+                            
+                            // Enable shadows for the object
+                            child.castShadow = true;
+                            child.receiveShadow = true;
+                        }
+                    });
                     this.scene.add(gltf.scene);
+
+
+                    
                 }
             );
             this.map = map;
 
             // use the MapLibre GL JS map canvas for three.js
+
+
+            // TODO: MAKE SHADOWS AUTOUPDATE FALSE TO PREVENT LAG
+
             this.renderer = new THREE.WebGLRenderer({
                 canvas: map.getCanvas(),
                 context: gl,
-                antialias: true
+                antialias: true,
             });
+
+            this.renderer.shadowMap.enabled = true;
+            this.renderer.shadowMap.type = THREE.VSMShadowMap;
+	        this.renderer.outputEncoding = THREE.sRGBEncoding;
 
             this.renderer.autoClear = false;
         },
@@ -157,7 +203,7 @@
             this.camera.projectionMatrix = m.multiply(l);
             this.renderer.resetState();
             this.renderer.render(this.scene, this.camera);
-            this.map.triggerRepaint();
+            // this.map.triggerRepaint();
         }
     };
 
