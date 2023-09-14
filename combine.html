@@ -9,13 +9,13 @@
 		/>
 		<link rel="icon" href="icon.png">
 
-
+        <script src="geojson.js"></script>
 
 		<script src="https://unpkg.com/three@0.147.0/build/three.min.js"></script>
-<script src="https://unpkg.com/three@0.147.0/examples/js/loaders/GLTFLoader.js"></script>
+        <script src="https://unpkg.com/three@0.147.0/examples/js/loaders/GLTFLoader.js"></script>
 
-<link rel='stylesheet' href='https://unpkg.com/maplibre-gl@3.3.1/dist/maplibre-gl.css' />
-<script src='https://unpkg.com/maplibre-gl@3.3.1/dist/maplibre-gl.js'></script>
+        <link rel='stylesheet' href='https://unpkg.com/maplibre-gl@3.3.1/dist/maplibre-gl.css' />
+        <script src='https://unpkg.com/maplibre-gl@3.3.1/dist/maplibre-gl.js'></script>
 
 
 		<style>
@@ -183,6 +183,31 @@
 
 
 				map.addLayer(customLayer);
+
+                map.addSource('geojson', {
+				type: 'geojson',
+				data: geojsonData
+				});
+
+				map.addLayer({
+				id: 'geojson-layer',
+				type: 'fill',
+				source: 'geojson',
+				paint: {
+					'fill-color': '#1e272e',
+					'fill-opacity': 0.3
+				}
+				});
+
+
+				map.on('click', 'geojson-layer', (e) => {
+					console.log(e);
+					new maplibregl.Popup()
+						.setLngLat(e.lngLat)
+						.setHTML(e.features[0].properties.name)
+						.addTo(map);
+				});
+
 
 				// // Add marker
 				// const marker = new maplibregl.Marker().setLngLat([124.6567, 8.485827379457602]).addTo(map);
